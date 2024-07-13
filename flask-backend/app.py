@@ -1,8 +1,12 @@
 from flask import Flask, request, jsonify
-from werkzeug.utils import secure_filename
+from inference_sdk import InferenceHTTPClient
 import os
 
 app = Flask(__name__)
+CLIENT = InferenceHTTPClient(
+    api_url="https://detect.roboflow.com",
+    api_key="MVFQf6G5SPZkEEqT013F"
+)
 
 # Define the path to the directory where uploaded images will be stored
 UPLOAD_FOLDER = 'uploads'
@@ -17,38 +21,26 @@ def classify_image():
         return jsonify({'error': 'No image file found'}), 400
     
     file = request.files['image']
-    if file.filename == '':
-        return jsonify({'error': 'No selected file'}), 400
-    
-    filename = secure_filename(file.filename)
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    
-    try:
-        file.save(file_path)
-        # Dummy response - replace with actual classification logic
-        response = {
-        "food_items": [
-            {
-            "name": "Apple",
-            "nutritional_facts": {
-                "calories": 52,
-                "protein": 0.3
-            }
-            },
-            {
-            "name": "Banana",
-            "nutritional_facts": {
-                "calories": 89,
-                "protein": 1.1
-            }
-            }
-        ]
-        }
+    file_path = os.path.join(UPLOAD_FOLDER, 'photo.jpg')
+    file.save(file_path)
 
-        return jsonify(response), 200
-    except Exception as e:
-        print(f'Error saving file: {e}')
-        return jsonify({'error': 'Failed to save file'}), 500
+    # Perform inference
+    result = CLIENT.infer(file_path, model_id='aicook-lcv4d/3')
+
+    # Process and structure the results
+    food_items = []
+    for prediction in result['predictions']:
+        food_items.append({
+            'name': prediction['class'],
+            # 'nutritional_facts': {
+            #     'calories': 100,  # Example value, replace with actual facts
+            #     'protein': 1,     # Example value, replace with actual facts
+            #     'fat': 0.5,       # Example value, replace with actual facts
+            #     'carbs': 25       # Example value, replace with actual facts
+            # }
+        })
+
+    return jsonify({'food_items': food_items})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)

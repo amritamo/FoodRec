@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Image, StyleSheet, View, Button, Text } from 'react-native';
+import { Image, StyleSheet, View, Button, Text, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 export default function HomeScreen() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [response, setResponse] = useState<any[]>([]);
+  const [response, setResponse] = useState<any>(null);
   const [permission, setPermission] = useState<boolean>(false);
 
   useEffect(() => {
@@ -51,9 +51,19 @@ export default function HomeScreen() {
         });
         const result = await response.json();
 
+        // Filter the response to only include unique food items
+        const uniqueFoodItems = result.food_items.reduce((acc: any[], current: any) => {
+          const x = acc.find(item => item.name === current.name);
+          if (!x) {
+            return acc.concat([current]);
+          } else {
+            return acc;
+          }
+        }, []);
+
         // Check the format of the response
-        if (result.food_items && Array.isArray(result.food_items)) {
-          setResponse(result.food_items);
+        if (uniqueFoodItems && Array.isArray(uniqueFoodItems)) {
+          setResponse(uniqueFoodItems);
         } else {
           console.error('Unexpected response format:', result);
           setResponse([]);
@@ -65,23 +75,21 @@ export default function HomeScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Button title="Pick an image from camera roll" onPress={pickImage} />
       {selectedImage && <Image source={{ uri: selectedImage }} style={styles.image} />}
       <Button title="Send Data" onPress={handleSendData} />
-      {response.length > 0 ? (
-        <View>
-          {response.map((item, index) => (
+      {response && (
+        <View style={styles.resultsContainer}>
+          {response.map((item: any, index: number) => (
             <View key={index} style={styles.resultContainer}>
-              <Text>Name: {item.name}</Text>
-              <Text>Nutritional Facts: {JSON.stringify(item.nutritional_facts)}</Text>
+              <Text style={styles.resultText}>Name: {item.name}</Text>
+              <Text style={styles.resultText}>Nutritional Facts: {JSON.stringify(item.nutritional_facts)}</Text>
             </View>
           ))}
         </View>
-      ) : (
-        <Text>No results or an error occurred.</Text>
       )}
-    </View>
+    </ScrollView>
   );
 }
 
@@ -90,18 +98,25 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 20,
   },
   image: {
     width: 200,
     height: 200,
+    marginVertical: 20,
+  },
+  resultsContainer: {
+    width: '100%',
     marginTop: 20,
   },
   resultContainer: {
-    marginTop: 20,
-    padding: 10,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    borderRadius: 5,
+    backgroundColor: '#f0f0f0',
+    padding: 15,
+    marginVertical: 10,
+    borderRadius: 10,
+  },
+  resultText: {
+    fontSize: 16,
   },
 });
 
