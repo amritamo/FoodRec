@@ -78,7 +78,7 @@ export default function HomeScreen() {
     <ScrollView contentContainerStyle={styles.container}>
       <Button title="Pick an image from camera roll" onPress={pickImage} />
       {selectedImage && <Image source={{ uri: selectedImage }} style={styles.image} />}
-      <Button title="Send Data" onPress={handleSendData} />
+      <Button title="Upload Image" onPress={handleSendData} />
       {response && (
         <View style={styles.resultsContainer}>
           {response.map((item: any, index: number) => (

@@ -1,8 +1,13 @@
 from flask import Flask, request, jsonify
 from inference_sdk import InferenceHTTPClient
+import pandas as pd
 import os
 
 app = Flask(__name__)
+
+# Load the preprocessed nutritional facts dataset
+nutritional_facts_df = pd.read_pickle('nutritional_facts.pkl')
+
 CLIENT = InferenceHTTPClient(
     api_url="https://detect.roboflow.com",
     api_key="MVFQf6G5SPZkEEqT013F"
@@ -30,14 +35,16 @@ def classify_image():
     # Process and structure the results
     food_items = []
     for prediction in result['predictions']:
+        nutritional_info = nutritional_facts_df[nutritional_facts_df['Food'] == prediction['class']]
+        if not nutritional_info.empty:
+            nutritional_info = nutritional_info.iloc[0].to_dict()
+        else:
+            nutritional_info = 'unknown'
         food_items.append({
             'name': prediction['class'],
-            # 'nutritional_facts': {
-            #     'calories': 100,  # Example value, replace with actual facts
-            #     'protein': 1,     # Example value, replace with actual facts
-            #     'fat': 0.5,       # Example value, replace with actual facts
-            #     'carbs': 25       # Example value, replace with actual facts
-            # }
+            'nutritional_facts': 
+                nutritional_info
+            
         })
 
     return jsonify({'food_items': food_items})
