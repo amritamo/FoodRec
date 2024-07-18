@@ -9,7 +9,7 @@ nutritional_facts_df = pd.read_pickle('nutritional_facts.pkl')
 
 CLIENT = InferenceHTTPClient(
     api_url="https://detect.roboflow.com",
-    api_key="MVFQf6G5SPZkEEqT013F"
+    api_key=
 )
 
 UPLOAD_FOLDER = 'uploads'
