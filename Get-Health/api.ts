@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-// Replace with your Flask backend URL and port
-const API_URL = 'http://192.168.1.107:5001/api/data';  // Change the port if necessary
+const API_URL = 'http://192.168.1.107:5001/api/data';  
 
 export const sendDataToServer = async (data) => {
     try {
