@@ -5,7 +5,6 @@ import os
 
 app = Flask(__name__)
 
-# Load the preprocessed nutritional facts dataset
 nutritional_facts_df = pd.read_pickle('nutritional_facts.pkl')
 
 CLIENT = InferenceHTTPClient(
@@ -13,7 +12,6 @@ CLIENT = InferenceHTTPClient(
     api_key="MVFQf6G5SPZkEEqT013F"
 )
 
-# Define the path to the directory where uploaded images will be stored
 UPLOAD_FOLDER = 'uploads'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
