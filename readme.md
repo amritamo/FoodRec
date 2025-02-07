@@ -7,30 +7,30 @@ The Smart Fridge Food Recommender is a mobile application that uses YOLOv5, an o
 Clone the Repository
 ```
 git clone https://github.com/yourusername/smart-food-recommender.git
-cd smart-food-recommender
+cd FoodRec
 ```
 Install Dependencies
 
 Frontend
 ```
-cd frontend
+cd GetHealth
 npm install
 ```
 Backend
 ```
-cd backend
+cd flask-backend
 pip install -r requirements.txt
 ```
 Run the Application
 
 Start Backend (Flask Server)
 ```
-cd backend
+cd flask-backend
 python app.py
 ```
 Start Frontend (Expo)
 ```
-cd frontend
+cd Get-Health
 expo start
 ```
 ## Usage
