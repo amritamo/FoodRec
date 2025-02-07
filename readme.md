@@ -13,7 +13,7 @@ Install Dependencies
 
 Frontend
 ```
-cd GetHealth
+cd Get-Health
 npm install
 ```
 Backend
