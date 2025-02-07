@@ -6,8 +6,8 @@ The Smart Fridge Food Recommender is a mobile application that uses YOLOv5, an o
 
 Clone the Repository
 ```
-git clone https://github.com/amritamo/FoodRec.git
-cd FoodRec
+git clone https://github.com/amritamo/Get-Health.git
+cd Get-Health
 ```
 Install Dependencies
 
